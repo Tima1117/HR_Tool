@@ -146,12 +146,12 @@ export default function TeamPage() {
           </div>
         </div>
 
-        <div className="max-w-5xl mx-auto px-6 py-8 space-y-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
 
           {/* Team header */}
-          <div className="flex items-start justify-between">
+          <div className="flex flex-col gap-3">
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">{team.name}</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-slate-900">{team.name}</h1>
               {head && (
                 <p className="text-sm text-slate-500 mt-1">
                   Руководитель: <span className="font-medium text-slate-700">{head.name}</span> · {head.position}
