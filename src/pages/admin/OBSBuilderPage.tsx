@@ -165,32 +165,6 @@ function TeamNode({
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            {team.subTeamIds.map(subId => (
-              <TeamNode
-                key={subId}
-                teamId={subId}
-                depth={depth + 1}
-                teams={teams}
-                employees={employees}
-                expandedTeams={expandedTeams}
-                newItemForm={newItemForm}
-                editTarget={editTarget}
-                onToggle={onToggle}
-                onStartAdd={onStartAdd}
-                onConfirm={onConfirm}
-                onCancel={onCancel}
-                onFormChange={onFormChange}
-                onRemoveEmployee={onRemoveEmployee}
-                onRemoveTeam={onRemoveTeam}
-                onSetHead={onSetHead}
-                onStartEdit={onStartEdit}
-                onCommitEdit={onCommitEdit}
-                onCancelEdit={onCancelEdit}
-                onEditChange={onEditChange}
-                companyId={team.companyId}
-              />
-            ))}
-
             {/* Head employee row */}
             {head && (
               <EmployeeRow
@@ -227,6 +201,32 @@ function TeamNode({
                 />
               );
             })}
+
+            {team.subTeamIds.map(subId => (
+              <TeamNode
+                key={subId}
+                teamId={subId}
+                depth={depth + 1}
+                teams={teams}
+                employees={employees}
+                expandedTeams={expandedTeams}
+                newItemForm={newItemForm}
+                editTarget={editTarget}
+                onToggle={onToggle}
+                onStartAdd={onStartAdd}
+                onConfirm={onConfirm}
+                onCancel={onCancel}
+                onFormChange={onFormChange}
+                onRemoveEmployee={onRemoveEmployee}
+                onRemoveTeam={onRemoveTeam}
+                onSetHead={onSetHead}
+                onStartEdit={onStartEdit}
+                onCommitEdit={onCommitEdit}
+                onCancelEdit={onCancelEdit}
+                onEditChange={onEditChange}
+                companyId={team.companyId}
+              />
+            ))}
 
             {isAddingHere && (
               <motion.div
