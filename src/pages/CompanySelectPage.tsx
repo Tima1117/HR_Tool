@@ -2,6 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Building2, ChevronRight, Users, BarChart2 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { pageVariants, staggerContainer, scaleIn } from '../lib/animations';
 
 export default function CompanySelectPage() {
   const { currentUser, companies, teams, selectCompany } = useApp();
@@ -15,26 +16,32 @@ export default function CompanySelectPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-100 flex flex-col items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="w-full max-w-lg"
-      >
+    <motion.div
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-100 flex flex-col items-center justify-center p-4"
+    >
+      <div className="w-full max-w-lg">
         {/* Header */}
-        <div className="text-center mb-10">
-          <div className="inline-flex w-14 h-14 bg-blue-600 rounded-2xl items-center justify-center shadow-lg shadow-blue-200 mb-5">
+        <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-center mb-10">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 380, damping: 28, delay: 0.05 }}
+            className="inline-flex w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl items-center justify-center shadow-lg shadow-blue-200 mb-5"
+          >
             <Building2 className="w-7 h-7 text-white" />
-          </div>
+          </motion.div>
           <h1 className="text-2xl font-bold text-slate-900">Выберите компанию</h1>
           <p className="text-slate-500 mt-2 text-sm">
             Добро пожаловать, {currentUser?.name}
           </p>
-        </div>
+        </motion.div>
 
         {/* Company list */}
-        <div className="space-y-3">
+        <motion.div variants={staggerContainer} initial="initial" animate="animate" className="space-y-3">
           {availableIds.map((id, i) => {
             const company = companies[id];
             if (!company) return null;
@@ -46,11 +53,10 @@ export default function CompanySelectPage() {
             return (
               <motion.button
                 key={id}
-                initial={{ opacity: 0, x: -16 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.08 }}
-                whileHover={{ scale: 1.01, translateY: -1 }}
-                whileTap={{ scale: 0.99 }}
+                variants={scaleIn}
+                whileHover={{ y: -3, scale: 1.01, boxShadow: '0 8px 25px -5px rgba(59,130,246,0.18)' }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: 'spring', stiffness: 380, damping: 28 }}
                 onClick={() => handleSelect(id)}
                 className="w-full bg-white rounded-2xl border border-slate-200 p-5 flex items-center gap-4 hover:border-blue-300 hover:shadow-md transition-all text-left group shadow-sm"
               >
@@ -82,8 +88,8 @@ export default function CompanySelectPage() {
               </motion.button>
             );
           })}
-        </div>
-      </motion.div>
-    </div>
+        </motion.div>
+      </div>
+    </motion.div>
   );
 }

@@ -9,6 +9,7 @@ import Layout from '../components/Layout';
 import { useApp } from '../context/AppContext';
 import { ArtifactType, ARTIFACT_META, Employee } from '../types';
 import EmployeeArtifactModal from '../components/EmployeeArtifactModal';
+import { pageVariants, staggerContainer, fadeUp, cardHover, slideLeft } from '../lib/animations';
 
 function initials(name: string) {
   return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
@@ -108,7 +109,13 @@ export default function TeamPage() {
   return (
     <Layout>
       {viewingEmp && <EmployeeArtifactModal emp={viewingEmp} onClose={() => setViewingEmp(null)} />}
-      <div className="min-h-screen bg-slate-50 pb-16">
+      <motion.div
+        variants={pageVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        className="min-h-screen bg-slate-50 pb-16"
+      >
         {/* Hidden file inputs */}
         <input ref={teamFileRef} type="file" accept=".pdf,.xlsx,.xls" className="hidden" onChange={onTeamFileChange} />
         <input ref={empFileRef} type="file" accept=".pdf,.xlsx,.xls" className="hidden" onChange={onEmpFileChange} />
@@ -182,15 +189,20 @@ export default function TeamPage() {
           {/* Team artifacts */}
           <section>
             <h2 className="text-lg font-semibold text-slate-800 mb-4">Артефакты команды</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <motion.div
+              variants={staggerContainer}
+              initial="initial"
+              animate="animate"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+            >
               {ARTIFACT_ORDER.map(type => {
                 const meta = ARTIFACT_META[type];
                 const art = team.artifacts[type];
                 return (
                   <motion.div
                     key={type}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    variants={fadeUp}
+                    {...cardHover}
                     className={`rounded-2xl border p-5 bg-white shadow-sm ${art ? 'border-slate-200' : 'border-dashed border-slate-200'}`}
                   >
                     <div className="flex items-start gap-3">
@@ -252,7 +264,7 @@ export default function TeamPage() {
                   </motion.div>
                 );
               })}
-            </div>
+            </motion.div>
           </section>
 
           {/* Employees */}
@@ -260,8 +272,13 @@ export default function TeamPage() {
             <h2 className="text-lg font-semibold text-slate-800 mb-4">
               Состав команды <span className="text-slate-400 font-normal text-base">({memberIds.length})</span>
             </h2>
-            <div className="space-y-3">
-              {memberIds.map((empId, idx) => {
+            <motion.div
+              variants={staggerContainer}
+              initial="initial"
+              animate="animate"
+              className="space-y-3"
+            >
+              {memberIds.map((empId) => {
                 const emp = employees[empId];
                 if (!emp) return null;
                 const isHead = empId === team.headId;
@@ -269,9 +286,8 @@ export default function TeamPage() {
                 return (
                   <motion.div
                     key={empId}
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.04 }}
+                    variants={slideLeft}
+                    {...cardHover}
                     className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
                   >
                     {/* Employee header row */}
@@ -397,10 +413,10 @@ export default function TeamPage() {
                   </motion.div>
                 );
               })}
-            </div>
+            </motion.div>
           </section>
         </div>
-      </div>
+      </motion.div>
     </Layout>
   );
 }

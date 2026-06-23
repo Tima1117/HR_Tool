@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronRight, Users, User } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { Team, Employee } from '../types';
+import { SPRING } from '../lib/animations';
 
 interface NodeProps {
   teamId: string;
@@ -33,9 +34,12 @@ function ListNode({ teamId, depth, teams, employees, onSelect }: NodeProps) {
           {hasChildren ? (expanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />) : null}
         </button>
 
-        <button
+        <motion.button
           onClick={() => onSelect(teamId)}
-          className="flex items-center gap-2 flex-1 min-w-0 hover:bg-slate-50 rounded-lg px-2 py-1 transition-colors text-left"
+          whileHover={{ backgroundColor: 'rgb(248 250 252)', x: 2 }}
+          whileTap={{ scale: 0.98 }}
+          transition={SPRING}
+          className="flex items-center gap-2 flex-1 min-w-0 rounded-lg px-2 py-1 text-left"
         >
           <div className="w-7 h-7 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
             <Users className="w-3.5 h-3.5 text-blue-600" />
@@ -49,7 +53,7 @@ function ListNode({ teamId, depth, teams, employees, onSelect }: NodeProps) {
               {artCount}/4 арт.
             </span>
           )}
-        </button>
+        </motion.button>
       </div>
 
       <AnimatePresence initial={false}>
