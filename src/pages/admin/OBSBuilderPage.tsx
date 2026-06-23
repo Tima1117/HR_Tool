@@ -37,6 +37,7 @@ interface TeamNodeProps {
   onFormChange: (patch: Partial<NewItemForm>) => void;
   onRemoveEmployee: (empId: string, teamId: string) => void;
   onRemoveTeam: (teamId: string) => void;
+  onSetHead: (empId: string, teamId: string) => void;
   onStartEdit: (target: EditTarget) => void;
   onCommitEdit: () => void;
   onCancelEdit: () => void;
@@ -71,7 +72,7 @@ function InlineInput({
 function TeamNode({
   teamId, depth, teams, employees, expandedTeams, newItemForm, editTarget,
   onToggle, onStartAdd, onConfirm, onCancel, onFormChange,
-  onRemoveEmployee, onRemoveTeam, onStartEdit, onCommitEdit, onCancelEdit, onEditChange,
+  onRemoveEmployee, onRemoveTeam, onSetHead, onStartEdit, onCommitEdit, onCancelEdit, onEditChange,
 }: TeamNodeProps) {
   const team = teams[teamId];
   if (!team) return null;
@@ -181,6 +182,7 @@ function TeamNode({
                 onFormChange={onFormChange}
                 onRemoveEmployee={onRemoveEmployee}
                 onRemoveTeam={onRemoveTeam}
+                onSetHead={onSetHead}
                 onStartEdit={onStartEdit}
                 onCommitEdit={onCommitEdit}
                 onCancelEdit={onCancelEdit}
@@ -197,6 +199,7 @@ function TeamNode({
                 isHead={true}
                 editTarget={editTarget}
                 onRemove={() => {}}
+                onSetHead={() => {}}
                 onStartEdit={onStartEdit}
                 onCommitEdit={onCommitEdit}
                 onCancelEdit={onCancelEdit}
@@ -216,6 +219,7 @@ function TeamNode({
                   isHead={false}
                   editTarget={editTarget}
                   onRemove={() => onRemoveEmployee(memberId, teamId)}
+                  onSetHead={() => onSetHead(memberId, teamId)}
                   onStartEdit={onStartEdit}
                   onCommitEdit={onCommitEdit}
                   onCancelEdit={onCancelEdit}
@@ -316,13 +320,14 @@ function TeamNode({
 }
 
 function EmployeeRow({
-  emp, teamId, isHead, editTarget, onRemove, onStartEdit, onCommitEdit, onCancelEdit, onEditChange,
+  emp, teamId, isHead, editTarget, onRemove, onSetHead, onStartEdit, onCommitEdit, onCancelEdit, onEditChange,
 }: {
   emp: Employee;
   teamId: string;
   isHead: boolean;
   editTarget: EditTarget | null;
   onRemove: () => void;
+  onSetHead: () => void;
   onStartEdit: (t: EditTarget) => void;
   onCommitEdit: () => void;
   onCancelEdit: () => void;
@@ -379,12 +384,21 @@ function EmployeeRow({
 
       <span className="text-xs font-mono text-slate-300 shrink-0">{emp.code}</span>
       {!isHead && (
-        <button
-          onClick={onRemove}
-          className="hidden group-hover/member:flex w-5 h-5 items-center justify-center rounded text-red-400 hover:bg-red-50 transition-colors shrink-0"
-        >
-          <Trash2 className="w-3.5 h-3.5" />
-        </button>
+        <div className="hidden group-hover/member:flex items-center gap-1 shrink-0">
+          <button
+            onClick={onSetHead}
+            title="Назначить руководителем"
+            className="w-5 h-5 flex items-center justify-center rounded text-amber-400 hover:bg-amber-50 transition-colors"
+          >
+            <Crown className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={onRemove}
+            className="w-5 h-5 flex items-center justify-center rounded text-red-400 hover:bg-red-50 transition-colors"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
       )}
     </div>
   );
@@ -482,6 +496,18 @@ export default function OBSBuilderPage() {
     if (!confirm('Удалить отдел и всё его содержимое?')) return;
     removeTeam(teamId);
   }, [removeTeam]);
+
+  const handleSetHead = useCallback((empId: string, teamId: string) => {
+    const team = teams[teamId];
+    if (!team || team.headId === empId) return;
+    const oldHeadId = team.headId;
+    updateTeam({
+      ...team,
+      headId: empId,
+      // old head becomes a regular member; new head removed from members
+      members: [...team.members.filter(id => id !== empId), oldHeadId],
+    });
+  }, [teams, updateTeam]);
 
   const handleStartEdit = useCallback((target: EditTarget) => {
     setEditTarget(target);
@@ -596,6 +622,7 @@ export default function OBSBuilderPage() {
               onFormChange={handleFormChange}
               onRemoveEmployee={handleRemoveEmployee}
               onRemoveTeam={handleRemoveTeam}
+              onSetHead={handleSetHead}
               onStartEdit={handleStartEdit}
               onCommitEdit={handleCommitEdit}
               onCancelEdit={handleCancelEdit}
