@@ -22,6 +22,15 @@ export default {
         'card': '0 1px 3px 0 rgb(0 0 0 / 0.07), 0 1px 2px -1px rgb(0 0 0 / 0.07)',
         'card-hover': '0 4px 12px 0 rgb(0 0 0 / 0.10), 0 2px 4px -1px rgb(0 0 0 / 0.08)',
       },
+      keyframes: {
+        spotlight: {
+          '0%': { opacity: '0', transform: 'translate(-72%, -62%) skewX(-30deg)' },
+          '100%': { opacity: '1', transform: 'translate(-50%, -40%) skewX(-30deg)' },
+        },
+      },
+      animation: {
+        spotlight: 'spotlight 2s ease 0.75s 1 forwards',
+      },
     },
   },
   plugins: [],
